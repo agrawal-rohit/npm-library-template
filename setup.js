@@ -70,7 +70,6 @@ inquirer
         packageJson.devDependencies["@types/react-dom"] = "^18.2.18";
         packageJson.devDependencies["eslint-plugin-react"] = "^7.33.2";
         packageJson.devDependencies["eslint-plugin-react-hooks"] = "^4.6.0";
-        packageJson.devDependencies["jest-environment-jsdom"] = "^29.7.0";
         packageJson.devDependencies.react = "^18.2.0";
         packageJson.devDependencies["react-dom"] = "^18.2.0";
       }
