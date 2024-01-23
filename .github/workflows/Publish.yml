@@ -72,13 +72,16 @@ jobs:
           sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" .github/ISSUE_TEMPLATE/feature_request.md
 
       #------------------------------------------------
-      # Commit README and package.json if changes exist
+      # Commit README, package.json and issue templates if changes exist
       #------------------------------------------------
-      - name: Commit README and package.json changes
+      - name: Commit README, package.json and issue templates changes
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
-          git diff --quiet || (git add README.md package.json && git commit -m "chore(config): Updated README and package.json")
+          if ! git diff --quiet; then
+            git add README.md package.json .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
+            git commit -m "chore(config): Updated README, package.json and issue templates"
+          fi
 
   # publish:
   #   if: ${{github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')}}
