@@ -59,8 +59,6 @@ jobs:
           PACKAGE_REPO=$(cat package.json | jq -r '.repository')
           if [ -z "$PACKAGE_REPO" ] || [ "$PACKAGE_REPO" == "<repository-url>" ]; then
             jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git config --global user.name "GitHub Actions" 
           fi
 
       #-----------------------------------------------------------------------------
@@ -78,6 +76,8 @@ jobs:
       #------------------------------------------------
       - name: Commit README and package.json changes
         run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
           git diff --quiet || (git add README.md package.json && git commit -m "chore(config): Updated README and package.json")
 
   # publish:
