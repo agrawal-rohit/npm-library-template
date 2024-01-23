@@ -87,30 +87,9 @@ inquirer
     const cocPath = "./CODE_OF_CONDUCT.md";
     fs.readFile(cocPath, "utf8", (err, data) => {
       if (err) throw err;
-      const updatedData = data.replace("<contact-email>", gitEmail);
+      const updatedData = data.replaceAll("<contact-email>", gitEmail);
 
       fs.writeFile(cocPath, updatedData, "utf8", (err) => {
-        if (err) throw err;
-      });
-    });
-
-    //* Update the issue templates
-    const bugReportPath = "./.github/ISSUE_TEMPLATE/bug_report.md";
-    fs.readFile(bugReportPath, "utf8", (err, data) => {
-      if (err) throw err;
-      const updatedData = data.replace("<github-username>", gitUsername);
-
-      fs.writeFile(bugReportPath, updatedData, "utf8", (err) => {
-        if (err) throw err;
-      });
-    });
-
-    const featureRequestPath = "./.github/ISSUE_TEMPLATE/feature_request.md";
-    fs.readFile(featureRequestPath, "utf8", (err, data) => {
-      if (err) throw err;
-      const updatedData = data.replace("<github-username>", gitUsername);
-
-      fs.writeFile(featureRequestPath, updatedData, "utf8", (err) => {
         if (err) throw err;
       });
     });
@@ -119,9 +98,11 @@ inquirer
     const readmeTemplatePath = "./README.template.md";
     fs.readFile(readmeTemplatePath, "utf8", (err, data) => {
       if (err) throw err;
-      let updatedData = data.replace("<library-name>", answers["library-name"]);
-      updatedData = updatedData.replace("<github-username>", gitUsername);
-      updatedData = updatedData.replace(
+      let updatedData = data.replaceAll(
+        "<library-name>",
+        answers["library-name"]
+      );
+      updatedData = updatedData.replaceAll(
         "<library-description>",
         answers["library-description"]
       );

@@ -50,19 +50,35 @@ jobs:
       - name: Test
         run: yarn test
 
-      #----------------------------------------------
-      # Update repository configuration and README.md
-      #----------------------------------------------
-      - name: Check and update information in package.json and README.md
+      #--------------------------------------------------
+      # Set Repository URL in package.json if not present
+      #--------------------------------------------------
+      - name: Set repository URL in package.json
         run: |
           REPO_URL=$(git config --get remote.origin.url)
           PACKAGE_REPO=$(cat package.json | jq -r '.repository')
-          CODACY_TOKEN=${{ secrets.CODACY_PROJECT_TOKEN }}
           if [ -z "$PACKAGE_REPO" ] || [ "$PACKAGE_REPO" == "<repository-url>" ]; then
             jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git config --global user.name "GitHub Actions" 
           fi
-          sed -i "s/<codacy-project-token>/$CODACY_TOKEN/g" README.md
-          git diff --quiet || (git config --global user.email "github-actions[bot]@users.noreply.github.com" && git config --global user.name "GitHub Actions" && git commit -am "chore(config): Updated package information")
+
+      #-----------------------------------------------------------------------------
+      # Replace placeholders with repository author id in README and issue templates
+      #-----------------------------------------------------------------------------
+      - name: Replace placeholders with repository author id
+        run: |
+          REPO_AUTHOR_ID=$(echo $REPO_URL | cut -d'/' -f4)
+          sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" README.md
+          sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" .github/ISSUE_TEMPLATE/bug_report.md
+          sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" .github/ISSUE_TEMPLATE/feature_request.md
+
+      #------------------------------------------------
+      # Commit README and package.json if changes exist
+      #------------------------------------------------
+      - name: Commit README and package.json changes
+        run: |
+          git diff --quiet || (git add README.md package.json && git commit -m "chore(config): Updated README and package.json")
 
   # publish:
   #   if: ${{github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')}}
