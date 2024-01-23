@@ -58,7 +58,7 @@ npm install
 **Using yarn:**
 
 ```bash
-yarn init
+yarn run init
 yarn install
 ```
 
