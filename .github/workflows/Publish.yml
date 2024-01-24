@@ -44,6 +44,12 @@ jobs:
       - name: Test
         run: yarn test
 
+      #--------------------------------------------
+      # Pull latest changes from the current branch
+      #--------------------------------------------
+      - name: Pull latest changes
+        run: git pull origin ${{ github.ref }}
+
       #--------------------------------------------------
       # Set Repository URL in package.json if not present
       #--------------------------------------------------
@@ -75,7 +81,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add .
-          git commit -m "chore(config): Updated library config" && echo "::set-output name=committed::true"
+          git commit -m "chore(config): Updated library config" && echo "committed=true" >> "$GITHUB_OUTPUT"
 
       #-------------------------------
       # Push changes to the repository if there are any commits
