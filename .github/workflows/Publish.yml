@@ -67,23 +67,22 @@ jobs:
       # Commit README, package.json and issue templates changes if they exist
       #--------------------------------------------------------------------------
       - name: Commit configuration changes
+        id: commit_changes
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git add README.md package.json .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
-          git diff --quiet || git commit -m "chore(config): Updated library config"
+          git diff --quiet && echo "No changes to commit" || (git commit -m "chore(config): Updated library config" && echo "::set-output name=committed::true")
 
       #-------------------------------
       # Push changes to the repository if there are any commits
       #-------------------------------
       - name: Push changes
-        if: env.GIT_COMMITTED == 'true'
+        if: steps.commit_changes.outputs.committed == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           branch: ${{ github.ref }}
-        env:
-          GIT_COMMITTED: ${{ steps.commit_configuration_changes.outputs.committed }}
 
   # publish:
   #   if: ${{github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')}}
