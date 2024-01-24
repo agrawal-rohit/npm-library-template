@@ -16,7 +16,8 @@
   "scripts": {
     "cz": "git-cz",
     "init": "node setup.js && rm setup.js",
-    "test": "jest --coverage",
+    "test": "jest",
+    "test:cov": "jest --coverage",
     "start": "rollup -c rollup.config.js -w",
     "build": "tsc && rollup -c rollup.config.js",
     "test:watch": "jest --coverage --watch",
