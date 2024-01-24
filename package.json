@@ -9,8 +9,8 @@
     "dist"
   ],
   "author": "author-name <github-email>",
-  "repository": "https://github.com/agrawal-rohit/npm-library-template",
-  "homepage": "https://github.com/agrawal-rohit/npm-library-template",
+  "repository": "",
+  "homepage": "",
   "license": "MIT",
   "private": false,
   "scripts": {
