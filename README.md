@@ -9,6 +9,7 @@ This template is designed to kickstart your NPM library development with best pr
   - [Preparation](#preparation)
   - [Initialization](#initialization)
   - [CI/CD Setup](#cicd-setup)
+  - [Making Commits](#making-commits)
 - [How to Contribute](#how-to-contribute)
 - [License](#license)
 
@@ -79,6 +80,26 @@ It is essential to ensure that the GitHub Actions workflow has **'Read and write
 `Repository Settings -> Actions -> General -> Workflow permissions`
 
 Please note that these tokens should be kept secret to prevent unauthorized access to your resources. Never expose these tokens in your code or version control system. Instead, use the repository settings or environment files to securely store these tokens.
+
+### Making Commits
+
+For making commits, we recommend following the conventional commits format. This format provides an easy way of parsing the commit log and is also used by [semantic-release](https://github.com/semantic-release/semantic-release) for auto-generating the CHANGELOG and the Github release descriptions. To make this process easier, we use `commitizen` and `cz-conventional-changelog`.
+
+To make a commit, stage your changes and run the following command:
+
+**Using npm:**
+
+```bash
+npm run cz
+```
+
+**Using yarn:**
+
+```bash
+yarn cz
+```
+
+This command will start an interactive prompt to generate the commit message. Follow the prompts and provide the necessary information. This will ensure that your commit message follows the conventional commits format.
 
 ## How to Contribute
 
