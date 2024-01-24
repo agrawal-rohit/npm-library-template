@@ -52,10 +52,16 @@ jobs:
           echo "Retrieving repository URL..."
           REPO_URL=$(git config --get remote.origin.url)
           echo "Repository URL is $REPO_URL"
-          PACKAGE_REPO=$(cat package.json | jq -r '.repository')
+          PACKAGE_REPO=$(jq -r '.repository' package.json)
+          PACKAGE_HOMEPAGE=$(jq -r '.homepage' package.json)
           echo "Current repository field in package.json: $PACKAGE_REPO"
-          jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
-          echo "Repository field in package.json is set to $REPO_URL"
+          echo "Current homepage field in package.json: $PACKAGE_HOMEPAGE"
+          jq --arg REPO_URL "$REPO_URL" '.repository = $REPO_URL | .homepage = $REPO_URL' package.json > tmp.json && mv tmp.json package.json
+          echo "Repository and homepage fields in package.json are set to $REPO_URL"
+          UPDATED_PACKAGE_REPO=$(jq -r '.repository' package.json)
+          UPDATED_PACKAGE_HOMEPAGE=$(jq -r '.homepage' package.json)
+          echo "Updated repository field in package.json: $UPDATED_PACKAGE_REPO"
+          echo "Updated homepage field in package.json: $UPDATED_PACKAGE_HOMEPAGE"
 
       #-----------------------------------------------------------------------------
       # Replace placeholders with repository author id in README and issue templates
@@ -63,7 +69,7 @@ jobs:
       - name: Replace placeholders with repository author id
         run: |
           echo "Extracting repository author ID..."
-          REPO_AUTHOR_ID=$(echo $REPO_URL | cut -d'/' -f4)
+          REPO_AUTHOR_ID=$(echo $(git config --get remote.origin.url) | cut -d'/' -f4)
           echo "Repository author ID is $REPO_AUTHOR_ID"
           echo "Replacing <github-username> with $REPO_AUTHOR_ID in README.md..."
           sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" README.md
