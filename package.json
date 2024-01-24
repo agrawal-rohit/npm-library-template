@@ -9,8 +9,8 @@
     "dist"
   ],
   "author": "author-name <github-email>",
-  "repository": "repository-url",
-  "homepage": "repository-url",
+  "repository": "<repository-url>",
+  "homepage": "<repository-url>",
   "license": "MIT",
   "private": false,
   "scripts": {

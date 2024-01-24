@@ -14,12 +14,6 @@ jobs:
         uses: actions/checkout@v2
 
       #----------------------------------------------
-      # Setup Kernel for React Native
-      #----------------------------------------------
-      - name: Setup kernel for react native, increase watchers
-        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-      #----------------------------------------------
       # Setup Node Environment
       #----------------------------------------------
       - name: Use Node 20.x
@@ -57,9 +51,7 @@ jobs:
         run: |
           REPO_URL=$(git config --get remote.origin.url)
           PACKAGE_REPO=$(cat package.json | jq -r '.repository')
-          if [ -z "$PACKAGE_REPO" ] || [ "$PACKAGE_REPO" == "<repository-url>" ]; then
-            jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
-          fi
+          jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
 
       #-----------------------------------------------------------------------------
       # Replace placeholders with repository author id in README and issue templates
@@ -68,8 +60,8 @@ jobs:
         run: |
           REPO_AUTHOR_ID=$(echo $REPO_URL | cut -d'/' -f4)
           sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" README.md
-          sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" .github/ISSUE_TEMPLATE/bug_report.md
-          sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" .github/ISSUE_TEMPLATE/feature_request.md
+          sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/bug_report.md
+          sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/feature_request.md
 
       #------------------------------------------------
       # Commit README, package.json and issue templates if changes exist
@@ -78,10 +70,8 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
-          if ! git diff --quiet; then
-            git add README.md package.json .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
-            git commit -m "chore(config): Updated README, package.json and issue templates"
-          fi
+          git add README.md package.json .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
+          git diff --quiet || git commit -m "chore(config): Updated README, package.json and issue templates"
 
   # publish:
   #   if: ${{github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')}}
