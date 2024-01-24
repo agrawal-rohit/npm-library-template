@@ -63,15 +63,16 @@ jobs:
           sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/bug_report.md
           sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/feature_request.md
 
-      #------------------------------------------------
-      # Commit README, package.json and issue templates if changes exist
-      #------------------------------------------------
-      - name: Commit README, package.json and issue templates changes
+      #--------------------------------------------------------------------------
+      # Commit and push README, package.json and issue templates if changes exist
+      #--------------------------------------------------------------------------
+      - name: Commit and push README, package.json and issue templates changes
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
           git add README.md package.json .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
           git diff --quiet || git commit -m "chore(config): Updated README, package.json and issue templates"
+          git push origin HEAD
 
   # publish:
   #   if: ${{github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')}}
