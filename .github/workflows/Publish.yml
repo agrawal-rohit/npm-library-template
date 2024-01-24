@@ -49,18 +49,27 @@ jobs:
       #--------------------------------------------------
       - name: Set repository URL in package.json
         run: |
+          echo "Retrieving repository URL..."
           REPO_URL=$(git config --get remote.origin.url)
+          echo "Repository URL is $REPO_URL"
           PACKAGE_REPO=$(cat package.json | jq -r '.repository')
+          echo "Current repository field in package.json: $PACKAGE_REPO"
           jq '.repository = env.REPO_URL' package.json > tmp.json && mv tmp.json package.json
+          echo "Repository field in package.json is set to $REPO_URL"
 
       #-----------------------------------------------------------------------------
       # Replace placeholders with repository author id in README and issue templates
       #-----------------------------------------------------------------------------
       - name: Replace placeholders with repository author id
         run: |
+          echo "Extracting repository author ID..."
           REPO_AUTHOR_ID=$(echo $REPO_URL | cut -d'/' -f4)
+          echo "Repository author ID is $REPO_AUTHOR_ID"
+          echo "Replacing <github-username> with $REPO_AUTHOR_ID in README.md..."
           sed -i "s/<github-username>/$REPO_AUTHOR_ID/g" README.md
+          echo "Replacing assignees in bug_report.md..."
           sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/bug_report.md
+          echo "Replacing assignees in feature_request.md..."
           sed -i "s/assignees:$/assignees: $REPO_AUTHOR_ID/" .github/ISSUE_TEMPLATE/feature_request.md
 
       #--------------------------------------------------------------------------
