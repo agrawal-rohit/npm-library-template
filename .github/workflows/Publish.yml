@@ -80,12 +80,13 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git add .
-          git diff --staged --quiet || git commit -m "chore(config): Updated library config"
-          if [[ $? -eq 0 ]]; then
-            echo "committed=true" >> "$GITHUB_ENV"
+          git add package.json README.md .github/ISSUE_TEMPLATE/bug_report.md .github/ISSUE_TEMPLATE/feature_request.md
+          GIT_DIFF=$(git diff --staged --quiet; echo $?)
+          if [[ $GIT_DIFF -ne 0 ]]; then
+            git commit -m "chore(config): Updated library config"
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "committed=false" >> "$GITHUB_ENV"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
           fi
 
       #-------------------------------
