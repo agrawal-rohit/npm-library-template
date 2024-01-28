@@ -42,7 +42,18 @@ jobs:
       # Run unit tests
       #----------------------------------------------
       - name: Test
-        run: yarn test
+        run: yarn test:cov
+
+      #----------------------------------------------
+      # Store coverage
+      #----------------------------------------------
+      - name: Upload coverage to Codacy
+        uses: codacy/codacy-coverage-reporter-action@1.0.0
+        with:
+          # API project token to retrieve your remote Codacy configuration for the project being analyzed
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          # Optional comma separated list of coverage reports to send to Codacy
+          coverage-reports: ./coverage/lcov.info
 
       #--------------------------------------------
       # Pull latest changes from the current branch
@@ -130,23 +141,6 @@ jobs:
   #     #----------------------------------------------
   #     - name: Install dependencies
   #       run: yarn install --frozen-lockfile
-
-  #     #----------------------------------------------
-  #     # Run unit tests
-  #     #----------------------------------------------
-  #     - name: Test
-  #       run: yarn test:cov
-
-  #     #----------------------------------------------
-  #     # Store coverage
-  #     #----------------------------------------------
-  #     - name: Upload coverage to Codacy
-  #       uses: codacy/codacy-coverage-reporter-action@1.0.0
-  #       with:
-  #         # API project token to retrieve your remote Codacy configuration for the project being analyzed
-  #         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-  #         # Optional comma separated list of coverage reports to send to Codacy
-  #         coverage-reports: ./coverage/lcov.info
 
   #     #----------------------------------------------
   #     # Build dist package
