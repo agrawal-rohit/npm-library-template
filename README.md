@@ -1,6 +1,6 @@
 # NPM Library Template
 
-This template is designed to kickstart your NPM library development with best practices and integrated tools.
+This template is designed to get you setup with best practices and integrated tools for your new NPM library, so you can just focus on shipping awesome code!
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ This template is designed to kickstart your NPM library development with best pr
 
 ## Features
 
-This template includes a variety of features to streamline your development process and ensure high-quality code:
+This template includes a variety of features to streamline your development and deployment process and ensure high-quality code:
 
 - :rocket: **Automated Releases**: CHANGELOG generation and release management with [semantic-release](https://github.com/semantic-release/semantic-release) for better efficiency.
 - :deciduous_tree: **Release Lifecycle Branches**: The template is pre-configured with the following branches, each serving a specific purpose in the release lifecycle:
@@ -79,11 +79,9 @@ It is essential to ensure that the GitHub Actions workflow has **'Read and write
 
 `Repository Settings -> Actions -> General -> Workflow permissions`
 
-Please note that these tokens should be kept secret to prevent unauthorized access to your resources. Never expose these tokens in your code or version control system. Instead, use the repository settings or environment files to securely store these tokens.
-
 ### Making Commits
 
-For making commits, we recommend following the conventional commits format. This format provides an easy way of parsing the commit log and is also used by [semantic-release](https://github.com/semantic-release/semantic-release) for auto-generating the CHANGELOG and the Github release descriptions. To make this process easier, we use `commitizen` and `cz-conventional-changelog`.
+For making commits, I recommend following the conventional commits format since it provides an easy way of parsing the commit log by [semantic-release](https://github.com/semantic-release/semantic-release) for auto-generating the CHANGELOG and the Github release descriptions. To make this process easier, I've included `commitizen` and `cz-conventional-changelog` in the template.
 
 To make a commit, stage your changes and run the following command:
 
@@ -103,7 +101,7 @@ This command will start an interactive prompt to generate the commit message. Fo
 
 ## How to Contribute
 
-We encourage contributions from the community. If you're looking to contribute, please read our [Contributing Guide](CONTRIBUTING.md) to get started.
+Apes together strong. If you'd like to help out, please read the [Contributing Guide](CONTRIBUTING.md) to get started.
 
 ## License
 
