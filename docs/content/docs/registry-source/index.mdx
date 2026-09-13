@@ -47,7 +47,7 @@ That writes:
 - `r/{itemId}/{packId}.json` — per-pack compiled items
 - Bundled install scripts and condition handlers under `r/`
 
-Npm-ecosystem `dependencies` and `commands` identify packages and `package.json` scripts. The CLI selects a package manager (npm, pnpm, Yarn, Bun, or Nub) at install time, preferring `package.json#packageManager`, then an unambiguous lockfile, and finally a prompt. Packs can match that selection with `when.packageManager`. Templates can interpolate `{{packageManager}}`, `{{pmRun}}`, `{{pmExec}}`, `{{pmInstall}}`, and `{{pmPublish}}`.
+Npm-ecosystem `dependencies` and `commands` identify packages and `package.json` scripts. The CLI selects a package manager (npm, pnpm, Yarn, Bun, or Nub) at install time, preferring `package.json#packageManager`, then an unambiguous lockfile, and finally a prompt. Packs can match that selection with `when.packageManager`. Templates can interpolate `{{packageManager}}`, `{{pmRun}}`, `{{pmExec}}`, `{{pmInstall}}`, `{{pmInstallCi}}`, and `{{pmPublish}}`.
 
 ## Conditions
 
@@ -134,11 +134,13 @@ After `beforeWrite`, Mustache runs on file targets, file contents, and command v
 
 1. Captured conditions (booleans stay boolean, arrays stay arrays)
 2. Select option `bindings` for the chosen value
-3. `packageManager` and `pmRun` / `pmExec` / `pmInstall` / `pmPublish` when a manager was selected
+3. `packageManager` and `pmRun` / `pmExec` / `pmInstall` / `pmInstallCi` / `pmPublish` when a manager was selected
 4. beforeWrite-hook `bindings` (extra keys only)
 
 Unknown `{{key}}` throws. Sections (`{{#key}}` / `{{^key}}`) may name absent optionals. Option and hook bindings cannot reuse a condition key, `packageManager`, or `pm*`.
 Resolved file targets are still validated as relative paths under the consuming project directory.
+
+Install bindings carry plain package-manager commands; the surface that runs them decides whether to add Socket Firewall. CI templates write the `sfw` prefix themselves (`run: sfw {{pmInstallCi}}`).
 
 GitHub Actions expressions (`${{ ... }}`) are left untouched. HTML escaping is disabled.
 

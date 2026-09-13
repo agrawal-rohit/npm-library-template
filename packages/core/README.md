@@ -31,7 +31,7 @@ That writes compiled output under `outDir` (defaults match the paths below; over
 - `r/{itemId}.beforeWrite.{index}.js` / `r/{itemId}.afterInstall.{index}.js` — bundled install scripts (local registries only at install time)
 - `r/_handlers/{key}.handler.js` — bundled condition handlers
 
-Consumers join index `source` values against the index location with `joinIndexSource`. Install scripts are loaded by `runBeforeWriteHook` / `runAfterInstallHook`. The package manager for the npm ecosystem is selected by core at install time (`package.json#packageManager`, then an unambiguous lockfile, otherwise a prompt) and passed into planning, interpolation (`packageManager`, `pmRun`, `pmExec`, `pmInstall`, `pmPublish`), hooks, and installs. Supported managers are npm, pnpm, Yarn, Bun, and Nub. Pack `when.packageManager` matches that selection.
+Consumers join index `source` values against the index location with `joinIndexSource`. Install scripts are loaded by `runBeforeWriteHook` / `runAfterInstallHook`. The package manager for the npm ecosystem is selected by core at install time (`package.json#packageManager`, then an unambiguous lockfile, otherwise a prompt) and passed into planning, interpolation (`packageManager`, `pmRun`, `pmExec`, `pmInstall`, `pmInstallCi`, `pmPublish`), hooks, and installs. Supported managers are npm, pnpm, Yarn, Bun, and Nub. Pack `when.packageManager` matches that selection.
 
 ## Validate compiled output
 

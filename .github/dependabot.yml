@@ -10,7 +10,7 @@ updates:
       time: "06:00"
     open-pull-requests-limit: 5
     cooldown:
-      default-days: 7
+      default-days: 3
     labels:
       - dependencies
       - github-actions
@@ -30,7 +30,7 @@ updates:
     rebase-strategy: auto
     open-pull-requests-limit: 10
     cooldown:
-      default-days: 7
+      default-days: 3
     labels:
       - dependencies
       - node

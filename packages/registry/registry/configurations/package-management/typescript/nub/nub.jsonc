@@ -1,15 +1,7 @@
 {
-	"$schema": "https://nubjs.com/schema/nub.jsonc",
-	// Require package versions to be at least three days old (4320 minutes).
-	"minimumReleaseAge": 4320,
-	// Fail resolution when every in-range version is younger than the cooldown.
-	"minimumReleaseAgeStrict": true,
-	// Refuse a version whose publish trust evidence is weaker than a prior release.
-	"trustPolicy": "no-downgrade",
-	// Require transitive dependencies to come from the configured registry.
-	"blockExoticSubdeps": true,
-	// Query OSV for malicious-package advisories during resolution.
-	"advisoryCheck": "on",
-	// Require unapproved lifecycle scripts to fail the install.
-	"strictDepBuilds": true
+	"$schema": "https://nubjs.com/schema/latest.json",
+	"install": {
+		// Require package versions to be at least three days old.
+		"minimumReleaseAge": "3d"
+	}
 }

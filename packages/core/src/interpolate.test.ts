@@ -38,7 +38,8 @@ describe("core/interpolate", () => {
 				packageManager: "pnpm",
 				pmRun: "pnpm",
 				pmExec: "pnpm exec",
-				pmInstall: "pnpm install --ignore-scripts --frozen-lockfile",
+				pmInstall: "pnpm install",
+				pmInstallCi: "pnpm install --ignore-scripts --frozen-lockfile",
 				pmPublish:
 					"pnpm -r publish --provenance --access public --no-git-checks",
 				sonarHost: "https://sonar.example",

@@ -483,7 +483,8 @@ describe("core/packages", () => {
 			).toEqual({
 				pmRun: "pnpm",
 				pmExec: "pnpm exec",
-				pmInstall: "pnpm install --ignore-scripts --frozen-lockfile",
+				pmInstall: "pnpm install",
+				pmInstallCi: "pnpm install --ignore-scripts --frozen-lockfile",
 				pmPublish:
 					"pnpm -r publish --provenance --access public --no-git-checks",
 			});
@@ -495,7 +496,8 @@ describe("core/packages", () => {
 			).toEqual({
 				pmRun: "nub run",
 				pmExec: "nub exec",
-				pmInstall: "nub install --ignore-scripts --frozen-lockfile",
+				pmInstall: "nub install",
+				pmInstallCi: "nub install --ignore-scripts --frozen-lockfile",
 				pmPublish: "nub publish --access public",
 			});
 		});
@@ -508,6 +510,7 @@ describe("core/packages", () => {
 				"pmRun",
 				"pmExec",
 				"pmInstall",
+				"pmInstallCi",
 				"pmPublish",
 			]);
 		});

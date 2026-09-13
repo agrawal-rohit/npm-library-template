@@ -31,6 +31,7 @@ export interface PackageManagerBindings {
 	pmRun: string;
 	pmExec: string;
 	pmInstall: string;
+	pmInstallCi: string;
 	pmPublish: string;
 }
 
@@ -64,8 +65,16 @@ export interface PackageManagerSpec {
 	label: string;
 	/** Lockfiles that identify this manager when present in the project root. */
 	lockfiles: readonly string[];
-	/** Mustache bindings injected when this manager is selected. */
-	bindings: PackageManagerBindings;
+	/** Argv after the executable for the manager's `run` command (e.g. `run`). */
+	run: readonly string[];
+	/** Argv after the executable for the manager's `exec` command (e.g. `exec`). */
+	exec: readonly string[];
+	/** Argv after the executable for a plain full install (local development). */
+	installRegular: readonly string[];
+	/** Argv after the executable for a hardened full install (CI: pinned, script-safe). */
+	installCi: readonly string[];
+	/** Argv after the executable for publishing workspace packages. */
+	publish: readonly string[];
 	/** Argv after the executable for runtime and dev package installs. */
 	install: Record<RegistryDependencyKind, readonly string[]>;
 }
@@ -117,78 +126,93 @@ export const ecosystemManagers = {
 			manager: NpmPackageManager.NPM,
 			label: "npm",
 			lockfiles: ["package-lock.json", "npm-shrinkwrap.json"],
+			run: ["run"],
+			exec: [],
+			installRegular: ["install"],
+			installCi: ["ci", "--ignore-scripts"],
+			publish: [
+				"publish",
+				"--workspaces",
+				"--provenance",
+				"--access",
+				"public",
+				"--no-git-checks",
+			],
 			install: {
 				[RegistryDependencyKind.RUNTIME]: ["install", "--ignore-scripts"],
 				[RegistryDependencyKind.DEV]: ["install", "--ignore-scripts", "-D"],
-			},
-			bindings: {
-				pmRun: "npm run",
-				pmExec: "npx",
-				pmInstall: "npm ci --ignore-scripts",
-				pmPublish:
-					"npm publish --workspaces --provenance --access public --no-git-checks",
 			},
 		},
 		{
 			manager: NpmPackageManager.PNPM,
 			label: "pnpm",
 			lockfiles: ["pnpm-lock.yaml"],
+			run: [],
+			exec: ["exec"],
+			installRegular: ["install"],
+			installCi: ["install", "--ignore-scripts", "--frozen-lockfile"],
+			publish: [
+				"-r",
+				"publish",
+				"--provenance",
+				"--access",
+				"public",
+				"--no-git-checks",
+			],
 			install: {
 				[RegistryDependencyKind.RUNTIME]: ["add", "--ignore-scripts"],
 				[RegistryDependencyKind.DEV]: ["add", "--ignore-scripts", "-D"],
-			},
-			bindings: {
-				pmRun: "pnpm",
-				pmExec: "pnpm exec",
-				pmInstall: "pnpm install --ignore-scripts --frozen-lockfile",
-				pmPublish:
-					"pnpm -r publish --provenance --access public --no-git-checks",
 			},
 		},
 		{
 			manager: NpmPackageManager.YARN,
 			label: "Yarn",
 			lockfiles: ["yarn.lock"],
+			run: [],
+			exec: [],
+			installRegular: ["install"],
+			installCi: ["install", "--frozen-lockfile", "--ignore-scripts"],
+			publish: [
+				"workspaces",
+				"foreach",
+				"-A",
+				"npm",
+				"publish",
+				"--provenance",
+				"--access",
+				"public",
+			],
 			install: {
 				[RegistryDependencyKind.RUNTIME]: ["add", "--ignore-scripts"],
 				[RegistryDependencyKind.DEV]: ["add", "--ignore-scripts", "-D"],
-			},
-			bindings: {
-				pmRun: "yarn",
-				pmExec: "yarn",
-				pmInstall: "yarn install --frozen-lockfile --ignore-scripts",
-				pmPublish:
-					"yarn workspaces foreach -A npm publish --provenance --access public",
 			},
 		},
 		{
 			manager: NpmPackageManager.BUN,
 			label: "Bun",
 			lockfiles: ["bun.lock"],
+			run: ["run"],
+			exec: [],
+			installRegular: ["install"],
+			installCi: ["install", "--frozen-lockfile"],
+			publish: ["publish", "--access", "public"],
 			install: {
 				[RegistryDependencyKind.RUNTIME]: ["add", "--ignore-scripts"],
 				[RegistryDependencyKind.DEV]: ["add", "--ignore-scripts", "-D"],
-			},
-			bindings: {
-				pmRun: "bun run",
-				pmExec: "bunx",
-				pmInstall: "bun install --frozen-lockfile",
-				pmPublish: "bun publish --access public",
 			},
 		},
 		{
 			manager: NpmPackageManager.NUB,
 			label: "Nub",
 			lockfiles: ["nub.lock"],
+			run: ["run"],
+			exec: ["exec"],
+			installRegular: ["install"],
+			installCi: ["install", "--ignore-scripts", "--frozen-lockfile"],
+			publish: ["publish", "--access", "public"],
 			install: {
 				[RegistryDependencyKind.RUNTIME]: ["add", "--ignore-scripts"],
 				[RegistryDependencyKind.DEV]: ["add", "--ignore-scripts", "-D"],
-			},
-			bindings: {
-				pmRun: "nub run",
-				pmExec: "nub exec",
-				pmInstall: "nub install --ignore-scripts --frozen-lockfile",
-				pmPublish: "nub publish --access public",
 			},
 		},
 	],
@@ -575,21 +599,33 @@ export function reservedInterpolationKeys(
 	const fallbackManagerSpec = ecosystemManagers[ecosystem][0];
 	/* v8 ignore next — every registered ecosystem declares at least one manager */
 	if (!fallbackManagerSpec) return [PACKAGE_MANAGER_KEY];
-	return [PACKAGE_MANAGER_KEY, ...Object.keys(fallbackManagerSpec.bindings)];
+	return [
+		PACKAGE_MANAGER_KEY,
+		...Object.keys(
+			packageManagerBindings(ecosystem, fallbackManagerSpec.manager),
+		),
+	];
 }
 
 /**
- * Interpolation bindings for a selected package manager.
+ * Interpolation bindings for a selected package manager, derived from its spec fragments.
  * @param ecosystem - Registry ecosystem that owns the manager.
  * @param manager - Selected package manager.
- * @returns Mustache bindings (`pmRun`, `pmExec`, `pmInstall`, `pmPublish`).
+ * @returns Mustache bindings (`pmRun`, `pmExec`, `pmInstall`, `pmInstallCi`, `pmPublish`).
  * @throws Error when the manager is not valid for the ecosystem.
  */
 export function packageManagerBindings(
 	ecosystem: RegistryEcosystem,
 	manager: RegistryPackageManager,
 ): PackageManagerBindings {
-	return { ...packageManagerSpec(ecosystem, manager).bindings };
+	const spec = packageManagerSpec(ecosystem, manager);
+	return {
+		pmRun: [spec.manager, ...spec.run].join(" "),
+		pmExec: [spec.manager, ...spec.exec].join(" "),
+		pmInstall: [spec.manager, ...spec.installRegular].join(" "),
+		pmInstallCi: [spec.manager, ...spec.installCi].join(" "),
+		pmPublish: [spec.manager, ...spec.publish].join(" "),
+	};
 }
 
 /**
