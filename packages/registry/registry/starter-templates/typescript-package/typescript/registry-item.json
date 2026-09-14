@@ -1,0 +1,169 @@
+{
+	"id": "typescript-package-starter-template",
+	"title": "TypeScript Package",
+	"description": "A TypeScript package starter template with sensible defaults and support for publishing to a package registry.",
+	"type": "starter-template",
+	"requires": [
+		"language",
+		"authorName",
+		"githubUsername"
+	],
+	"conditions": {
+		"packageKind": {
+			"kind": "select",
+			"required": true,
+			"label": "Package kind",
+			"description": "Which type of TypeScript package should we scaffold?",
+			"default": "basic",
+			"values": [
+				{
+					"value": "basic",
+					"label": "Basic library"
+				},
+				{
+					"value": "react",
+					"label": "React component library",
+					"bindings": {
+						"hasPlayground": "true"
+					}
+				}
+			]
+		},
+		"packageName": {
+			"kind": "text",
+			"required": true,
+			"label": "Package name",
+			"description": "Package name (e.g. foobar, @org/foobar)."
+		},
+		"packageDescription": {
+			"kind": "text",
+			"label": "Package description",
+			"description": "Short package description (optional)."
+		},
+		"publishToNpm": {
+			"kind": "boolean",
+			"required": true,
+			"label": "Publish to NPM",
+			"description": "Publish this package to NPM?",
+			"default": true
+		},
+		"initializeGit": {
+			"kind": "boolean",
+			"label": "Initialize git repository",
+			"description": "Initialize git in the new package directory?",
+			"default": true
+		}
+	},
+	"dependsOn": [
+		"issue-templates-configuration",
+		"pr-template-configuration",
+		"code-of-conduct-configuration",
+		"license-configuration",
+		"pre-commit-hooks-configuration",
+		"testing-configuration",
+		"mutation-testing-configuration",
+		"dependency-updates-configuration",
+		"setup-workspace-workflow",
+		"build-package-workflow",
+		"release-package-workflow",
+		"repository-settings-workflow",
+		"code-quality-workflow",
+		"security-checks-workflow",
+		"assign-owner-workflow",
+		"code-standards-agent-instruction",
+		"typescript-agent-instruction"
+	],
+	"dependencies": {
+		"npm": {
+			"dev": [
+				"tsdown@^0.15",
+				"typescript@^5",
+				"@types/node@^24"
+			]
+		}
+	},
+	"commands": {
+		"npm": {
+			"build": "tsdown",
+			"dev": "tsdown --watch",
+			"typecheck": "tsc --noEmit"
+		}
+	},
+	"afterInstall": [
+		"initialize-git.after-install.ts"
+	],
+	"files": [
+		{
+			"source": "package.template.json",
+			"target": "{{packageName}}/package.json"
+		},
+		{
+			"source": ".gitignore",
+			"target": "{{packageName}}/.gitignore"
+		},
+		{
+			"source": "README.md",
+			"target": "{{packageName}}/README.md"
+		},
+		{
+			"source": "CONTRIBUTING.md",
+			"target": "{{packageName}}/CONTRIBUTING.md"
+		}
+	],
+	"packs": [
+		{
+			"id": "basic",
+			"title": "Basic library",
+			"when": {
+				"language": "typescript",
+				"packageKind": "basic"
+			},
+			"files": [
+				{
+					"source": "basic",
+					"target": "{{packageName}}"
+				}
+			]
+		},
+		{
+			"id": "react",
+			"title": "React library",
+			"when": {
+				"language": "typescript",
+				"packageKind": "react"
+			},
+			"dependsOn": [
+				"react-agent-instruction"
+			],
+			"dependencies": {
+				"npm": {
+					"dev": [
+						"react@^19",
+						"react-dom@^19",
+						"@types/react@^19",
+						"@types/react-dom@^19",
+						"@vitejs/plugin-react@^4",
+						"vite@^7",
+						"@tailwindcss/vite@^4",
+						"tailwindcss@^4",
+						"@testing-library/jest-dom@^6",
+						"@testing-library/react@^16",
+						"happy-dom@^20",
+						"@fontsource-variable/geist@^5"
+					]
+				}
+			},
+			"commands": {
+				"npm": {
+					"playground": "vite --config playground/vite.config.ts"
+				}
+			},
+			"files": [
+				{
+					"source": "react",
+					"target": "{{packageName}}"
+				}
+			]
+		}
+	]
+}
