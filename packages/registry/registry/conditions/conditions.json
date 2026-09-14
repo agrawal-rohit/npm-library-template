@@ -3,7 +3,7 @@
 		"kind": "select",
 		"required": true,
 		"label": "Language",
-		"description": "Which language are you planning to use?",
+		"description": "Language for the project.",
 		"handler": "conditions/language.handler.ts",
 		"values": [
 			{
@@ -19,7 +19,7 @@
 		"kind": "text",
 		"required": true,
 		"label": "Author name",
-		"description": "Who should be credited as the author?",
+		"description": "Who should be credited as author?",
 		"handler": "conditions/author-name.handler.ts"
 	},
 	"githubUsername": {
@@ -40,7 +40,7 @@
 		"kind": "select",
 		"required": true,
 		"label": "Coding agent",
-		"description": "Which coding agent or IDE should instructions be generated for?",
+		"description": "Which coding agent or IDE should instructions target?",
 		"handler": "conditions/ide-format.handler.ts",
 		"values": [
 			{ "value": "cursor", "label": "Cursor" },

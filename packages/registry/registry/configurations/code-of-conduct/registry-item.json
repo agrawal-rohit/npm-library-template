@@ -8,7 +8,7 @@
 			"kind": "text",
 			"required": true,
 			"label": "Enforcement contact",
-			"description": "Email or URL where Code of Conduct reports should be sent.",
+			"description": "Where should Code of Conduct reports be sent?",
 			"handler": "enforcement-contact.handler.ts"
 		}
 	},

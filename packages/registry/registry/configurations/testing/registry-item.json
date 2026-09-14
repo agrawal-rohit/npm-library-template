@@ -12,7 +12,7 @@
 			"kind": "text",
 			"required": true,
 			"label": "Coverage line threshold",
-			"description": "Minimum line coverage percentage (default 45).",
+			"description": "Minimum line coverage percentage required.",
 			"default": "80"
 		}
 	},

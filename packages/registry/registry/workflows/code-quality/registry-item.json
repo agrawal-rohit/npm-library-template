@@ -17,7 +17,7 @@
 			"required": true,
 			"kind": "multiselect",
 			"label": "Quality tools",
-			"description": "Which code quality gates should be installed?",
+			"description": "Code quality gates to set up.",
 			"values": [
 				{
 					"value": "biome",

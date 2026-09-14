@@ -13,7 +13,7 @@
 			"kind": "select",
 			"required": true,
 			"label": "Package kind",
-			"description": "What kind of TypeScript package should be scaffolded?",
+			"description": "Which type of TypeScript package should we scaffold?",
 			"default": "basic",
 			"values": [
 				{
@@ -33,18 +33,24 @@
 			"kind": "text",
 			"required": true,
 			"label": "Package name",
-			"description": "Name of the package (e.g. foobar, @org/foobar)."
+			"description": "Package name (e.g. foobar, @org/foobar)."
 		},
 		"packageDescription": {
 			"kind": "text",
 			"label": "Package description",
-			"description": "Short description of the package (optional)."
+			"description": "Short package description (optional)."
 		},
 		"publishToNpm": {
 			"kind": "boolean",
 			"required": true,
 			"label": "Publish to NPM",
-			"description": "Should this package be published to NPM as a public package?",
+			"description": "Publish this package to NPM?",
+			"default": true
+		},
+		"initializeGit": {
+			"kind": "boolean",
+			"label": "Initialize git repository",
+			"description": "Initialize git in the new package directory?",
 			"default": true
 		}
 	},
@@ -83,6 +89,9 @@
 			"typecheck": "tsc --noEmit"
 		}
 	},
+	"afterInstall": [
+		"initialize-git.after-install.ts"
+	],
 	"files": [
 		{
 			"source": "package.template.json",
